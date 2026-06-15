@@ -5,6 +5,7 @@ const input = document.getElementById("new-todo-input");
 const list = document.getElementById("todo-list");
 const emptyState = document.getElementById("empty-state");
 const todoCount = document.getElementById("todo-count");
+const clearCompletedButton = document.getElementById("clear-completed");
 
 /** @type {{ id: number, text: string, done: boolean }[]} */
 let todos = load();
@@ -47,11 +48,27 @@ function deleteTodo(id) {
   render();
 }
 
+function clearCompletedTodos() {
+  const activeTodos = todos.filter((item) => !item.done);
+  if (activeTodos.length === todos.length) {
+    return;
+  }
+  todos = activeTodos;
+  save();
+  render();
+}
+
 function render() {
   list.innerHTML = "";
   emptyState.hidden = todos.length > 0;
   const activeCount = todos.filter((todo) => !todo.done).length;
+  const completedCount = todos.length - activeCount;
   todoCount.textContent = `${activeCount} active ${activeCount === 1 ? "todo" : "todos"}`;
+  clearCompletedButton.disabled = completedCount === 0;
+  clearCompletedButton.textContent =
+    completedCount === 0
+      ? "Clear completed"
+      : `Clear ${completedCount} completed ${completedCount === 1 ? "todo" : "todos"}`;
 
   for (const todo of todos) {
     const li = document.createElement("li");
@@ -84,5 +101,7 @@ form.addEventListener("submit", (event) => {
   input.value = "";
   input.focus();
 });
+
+clearCompletedButton.addEventListener("click", clearCompletedTodos);
 
 render();
