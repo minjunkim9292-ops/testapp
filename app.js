@@ -4,6 +4,7 @@ const form = document.getElementById("new-todo-form");
 const input = document.getElementById("new-todo-input");
 const list = document.getElementById("todo-list");
 const emptyState = document.getElementById("empty-state");
+const todoCount = document.getElementById("todo-count");
 
 /** @type {{ id: number, text: string, done: boolean }[]} */
 let todos = load();
@@ -49,6 +50,8 @@ function deleteTodo(id) {
 function render() {
   list.innerHTML = "";
   emptyState.hidden = todos.length > 0;
+  const activeCount = todos.filter((todo) => !todo.done).length;
+  todoCount.textContent = `${activeCount} active ${activeCount === 1 ? "todo" : "todos"}`;
 
   for (const todo of todos) {
     const li = document.createElement("li");
